@@ -31,19 +31,29 @@ class FloatingPanelService : Service() {
             textSize = 16f
             setTextColor(0xFF007F86.toInt())
         })
-        val name = EditText(this).apply { hint = "Nombre del contacto"; singleLine = true }
+        val name = EditText(this).apply {
+            hint = "Nombre del contacto"
+            setSingleLine(true)
+        }
         box.addView(name)
-        val preview = TextView(this).apply { text = "Escribe el nombre y prepara el mensaje."; textSize = 13f }
+        val preview = TextView(this).apply {
+            text = "Escribe el nombre y prepara el mensaje."
+            textSize = 13f
+        }
         box.addView(Button(this).apply {
             text = "Preparar mensaje"
-            setOnClickListener { preview.text = MessageComposer.create(name.text.toString()) }
+            setOnClickListener {
+                preview.text = MessageComposer.create(name.text.toString())
+            }
         })
         box.addView(preview)
         box.addView(Button(this).apply {
             text = "Copiar mensaje"
             setOnClickListener {
                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                clipboard.setPrimaryClip(ClipData.newPlainText("Mensaje Colmena", preview.text))
+                clipboard.setPrimaryClip(
+                    ClipData.newPlainText("Mensaje Colmena", preview.text)
+                )
             }
         })
         box.addView(Button(this).apply {
@@ -51,11 +61,22 @@ class FloatingPanelService : Service() {
             setOnClickListener { stopSelf() }
         })
         panel = box
-        val type = if (Build.VERSION.SDK_INT >= 26) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PHONE
+        val type = if (Build.VERSION.SDK_INT >= 26) {
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            WindowManager.LayoutParams.TYPE_PHONE
+        }
         val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
-            type, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT
-        ).apply { gravity = Gravity.END or Gravity.CENTER_VERTICAL; x = 12; y = 0 }
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            type,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
+            x = 12
+            y = 0
+        }
         manager.addView(box, params)
     }
 
@@ -64,5 +85,6 @@ class FloatingPanelService : Service() {
         panel = null
         super.onDestroy()
     }
+
     override fun onBind(intent: Intent?): IBinder? = null
 }
